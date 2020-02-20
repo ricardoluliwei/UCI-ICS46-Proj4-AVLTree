@@ -37,6 +37,9 @@ private:
     
     void insert(Node* root, const Key & k, const Value & v);
     Value* find(Node* root, const Key & k) const;
+    void inOrder(Node* root, std::vector<Key> &ans) const;
+    void preOrder(Node* root, std::vector<Key> &ans) const;
+    void postOrder(Node* root, std::vector<Key> &ans) const;
 public:
     MyAVLTree();
     
@@ -199,31 +202,63 @@ void MyAVLTree<Key, Value>::insert(Node* root, const Key & k, const Value & v)
 }
 
 
-
+template<typename Key, typename Value>
+void MyAVLTree<Key, Value>::inOrder(Node* root, std::vector<Key> &ans) const
+{
+    if (!root)
+        return;
+    inOrder(root->leftChild, ans);
+    ans.push_back(root->key);
+    inOrder(root->rightChild, ans);
+}
 
 template<typename Key, typename Value>
 std::vector<Key> MyAVLTree<Key, Value>::inOrder() const
 {
-    std::vector<Key> foo;
-    return foo;
+    std::vector<Key> ans;
+    inOrder(mRoot, ans);
+    return ans;
 }
 
+
+template<typename Key, typename Value>
+void MyAVLTree<Key, Value>::preOrder(Node* root, std::vector<Key> &ans) const
+{
+    if (!root)
+        return;
+    
+    ans.push_back(root->val);
+    preOrder(root->leftChild, ans);
+    preOrder(root->rightChild, ans);
+}
 
 template<typename Key, typename Value>
 std::vector<Key> MyAVLTree<Key, Value>::preOrder() const
 {
-    std::vector<Key> foo;
-    return foo;
+    std::vector<Key> ans;
+    preOrder(mRoot, ans);
+    return ans;
 }
 
 
 template<typename Key, typename Value>
-std::vector<Key> MyAVLTree<Key, Value>::postOrder() const
+void MyAVLTree<Key, Value>::postOrder(Node* root, std::vector<Key> &ans) const
 {
-    std::vector<Key> foo;
-    return foo;
+    if (!root)
+        return;
+    
+    postOrder(root->leftChild, ans);
+    postOrder(root->rightChild, ans);
+    ans.push_back(root->val);
 }
 
+template<typename Key, typename Value>
+std::vector<Key> MyAVLTree<Key, Value>::postOrder() const
+{
+    std::vector<Key> ans;
+    postOrder(mRoot, ans);
+    return ans;
+}
 
 
 

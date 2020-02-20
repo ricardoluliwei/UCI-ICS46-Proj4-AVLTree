@@ -33,6 +33,7 @@ void countWords(std::istream & in, MyAVLTree<std::string, unsigned> & counter)
 			{
 				std::cout << word << std::endl;
 				// In the "real program," you do something else here.
+                
 			}
 			else
 			{
