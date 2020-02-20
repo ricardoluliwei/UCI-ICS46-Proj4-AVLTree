@@ -13,12 +13,12 @@ public:
 
 template<typename Key, typename Value>
 struct treeNode{
-    size_t height;
     Key key;
     Value val;
     treeNode* leftChild;
     treeNode* rightChild;
-    treeNode(Key k, Value v) : height(0), key(k), val(v), leftChild(NULL), rightChild(NULL){}
+    treeNode(Key k, Value v) : key(k), val(v), leftChild(NULL), rightChild(NULL){}
+    bool operator ==(const treeNode<Key, Value> &node) const {return key == node.key;}
 };
 
 
@@ -30,16 +30,22 @@ private:
     size_t mSize;
     Node* mRoot;
     
-    void LLrotation();
-    void RRrotation();
-    void LRrotation();
-    void RLrotation();
+    //helper functions
+    void LLrotation(Node* rotateNode, Node* prev);
+    void RRrotation(Node* rotateNode, Node* prev);
+    void LRrotation(Node* rotateNode, Node* prev);
+    void RLrotation(Node* rotateNode, Node* prev);
     
-    void insert(Node* root, const Key & k, const Value & v);
+    size_t getheight(Node* root);
+    void balance(Node* root, Node* prev);
+    
+    void insert(Node* root, const Key & k, const Value &v);
     Value* find(Node* root, const Key & k) const;
     void inOrder(Node* root, std::vector<Key> &ans) const;
     void preOrder(Node* root, std::vector<Key> &ans) const;
     void postOrder(Node* root, std::vector<Key> &ans) const;
+    
+    
 public:
     MyAVLTree();
     
@@ -126,9 +132,8 @@ Value* MyAVLTree<Key, Value>::find(Node* root, const Key & k) const
     if (root->key == k)
         return &(root->val);
     
-    Value* left = find(root->leftChild, k);
-    if (left)
-        return left;
+    if(k < root->key)
+        find(root->leftChild, k);
     
     return find(root->rightChild, k);
 }
@@ -178,7 +183,7 @@ void MyAVLTree<Key, Value>::insert(const Key & k, const Value & v)
     
     insert(mRoot, k, v);
     mSize++;
-    
+    balance(mRoot, NULL);
 }
 
 //root must not be empty, k, v should not exist in the tree
@@ -207,6 +212,7 @@ void MyAVLTree<Key, Value>::inOrder(Node* root, std::vector<Key> &ans) const
 {
     if (!root)
         return;
+    
     inOrder(root->leftChild, ans);
     ans.push_back(root->key);
     inOrder(root->rightChild, ans);
@@ -261,8 +267,161 @@ std::vector<Key> MyAVLTree<Key, Value>::postOrder() const
 }
 
 
+template <typename Key, typename Value>
+size_t MyAVLTree<Key, Value>::getheight(Node* root) {
+    if (!root)
+        return 0;
+    
+    size_t left = getheight(root->leftChild);
+    size_t right = getheight(root->rightChild);
+    
+    return (left < right ? right : left) + 1;
+}
+
+/*
+        A
+       / \
+      B   h
+     / \
+    h+1 h
+ */
+template <typename Key, typename Value>
+void MyAVLTree<Key, Value>::LLrotation(Node* rotateNode, Node* prev){
+    Node* b;
+    if (!prev) {
+        b = rotateNode->leftChild;
+        mRoot = b;
+    } else if (prev->leftChild == rotateNode) {
+        prev->leftChild = rotateNode->leftChild;
+        b = prev->leftChild;
+    } else {
+        prev->rightChild = rotateNode->leftChild;
+        b = prev->rightChild;
+    }
+    
+    rotateNode->leftChild = b->rightChild;
+    b->rightChild = rotateNode;
+}
+
+/*
+        A
+       / \
+      h   B
+         / \
+        h  h+1
+ */
+template <typename Key, typename Value>
+void MyAVLTree<Key, Value>::RRrotation(Node* rotateNode, Node* prev){
+    Node* b;
+    if (!prev) {
+        b = rotateNode->rightChild;
+        mRoot = b;
+    } else if (prev->leftChild == rotateNode) {
+        prev->leftChild = rotateNode->rightChild;
+        b = prev->leftChild;
+    } else {
+        prev->rightChild = rotateNode->rightChild;
+        b = prev->rightChild;
+    }
+    
+    rotateNode->rightChild = b->rightChild;
+    b->rightChild = rotateNode;
+}
 
 
+/*
+        A
+       / \
+      B   h
+     / \
+    h   C
+       / \
+      h   h
+ */
+template <typename Key, typename Value>
+void MyAVLTree<Key, Value>::LRrotation(Node* rotateNode, Node* prev){
+    Node* c;
+    if (!prev) {
+        c = rotateNode->leftChild->rightChild;
+        mRoot = c;
+    } else if (prev->leftChild == rotateNode) {
+        prev->leftChild = rotateNode->leftChild->rightChild;
+        c = prev->leftChild;
+    } else {
+        prev->rightChild = rotateNode->leftChild->rightChild;
+        c = prev->rightChild;
+    }
+    
+    rotateNode->leftChild->rightChild = c->leftChild;
+    c->leftChild = rotateNode->leftChild;
+    rotateNode->leftChild = c->rightChild;
+    c->rightChild = rotateNode;
+    
+}
+
+/*
+        A
+       / \
+      h   B
+         / \
+        C   h
+       / \
+      h   h
+ */
+
+template <typename Key, typename Value>
+void MyAVLTree<Key, Value>::RLrotation(Node* rotateNode, Node* prev){
+    Node* c;
+    if (!prev) {
+        c = rotateNode->rightChild->leftChild;
+        mRoot = c;
+    } else if (prev->leftChild == rotateNode) {
+        prev->leftChild = rotateNode->rightChild->leftChild;
+        c = prev->leftChild;
+    } else {
+        prev->rightChild = rotateNode->rightChild->leftChild;
+        c = prev->rightChild;
+    }
+    
+    rotateNode->rightChild->leftChild = c->rightChild;
+    c->rightChild = rotateNode->rightChild;
+    rotateNode->rightChild = c->leftChild;
+    c->leftChild = rotateNode;
+}
+
+
+template <typename Key, typename Value>
+void MyAVLTree<Key, Value>::balance(Node* root, Node* prev){
+    if (!root)
+        return;
+    
+    if (root->leftChild)
+        balance(root->leftChild, root);
+    
+    if (root->rightChild)
+        balance(root->rightChild, root);
+    
+    size_t leftHeight = getheight(root->leftChild);
+    size_t rightHeight = getheight(root->rightChild);
+    
+    if (leftHeight > rightHeight && leftHeight - rightHeight > 1) {
+        if (getheight(root->leftChild->leftChild) < getheight(root->leftChild->rightChild)) {
+            LRrotation(root, prev);
+            return;
+        }
+        LLrotation(root, prev);
+        return;
+    }
+    
+    if (rightHeight > leftHeight && rightHeight - leftHeight > 1) {
+        if (getheight(root->rightChild->rightChild) < getheight(root->rightChild->leftChild)) {
+            RLrotation(root, prev);
+            return;
+        }
+        RRrotation(root, prev);
+        return;
+    }
+}
 
 
 #endif 

@@ -29,7 +29,7 @@ void testOrder(){
 
 int main()
 {
-    testOrder();
+    testFind();
     return 0;
 }
 
