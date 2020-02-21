@@ -56,7 +56,7 @@ private:
     void preOrder(Node* root, std::vector<Key> &ans) const;
     void postOrder(Node* root, std::vector<Key> &ans) const;
     
-    
+     std::string toString(Node* root, size_t level);
 public:
     MyAVLTree();
     
@@ -289,6 +289,7 @@ size_t MyAVLTree<Key, Value>::getheight(Node* root) {
     return (left < right ? right : left) + 1;
 }
 
+
 /*
         A
        / \
@@ -434,6 +435,24 @@ void MyAVLTree<Key, Value>::balance(Node* root, Node* prev){
     }
 }
 
+template<typename Key, typename Value>
+std::string MyAVLTree<Key, Value>::toString(Node* root, size_t level){
+    if (!root) {
+        return "";
+    }
+    std::string ans = toString(root->leftChild, level + 1);
+    ans += "\n";
+    for (int i = 0; i < level; i++) {
+        ans += "\t";
+    }
+    ans += root->key;
+    ans += toString(root->rightChild, level + 1);
+    return ans;
+}
 
+template<typename Key, typename Value>
+std::string MyAVLTree<Key, Value>::toString(){
+    return toString(mRoot, 0);
+}
 
 #endif 

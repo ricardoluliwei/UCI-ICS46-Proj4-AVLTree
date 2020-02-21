@@ -1,6 +1,8 @@
 #include <fstream>
 #include <iostream>
 #include "MyAVLTree.hpp"
+#include <sstream>
+#include "proj4.hpp"
 using namespace std;
 
 void testFind(){
@@ -12,6 +14,7 @@ void testFind(){
     cout<< tree.find(12) << endl;
     tree.find(12) = "It's me now";
     cout << tree.find(12) << endl;
+    cout << tree.toString() <<endl;
 }
 
 void testOrder(){
@@ -27,9 +30,23 @@ void testOrder(){
     }
 }
 
+void test(){
+    std::string quote = "I'm dishonest, and a dishonest man you can ";
+    quote += "always trust to be dishonest. Honestly. It's the honest ";
+    quote += "ones you want to watch out for, because you can never ";
+    quote += "predict when they're going to do something incredibly... stupid.";
+    
+    std::istringstream stream( quote );
+    
+    MyAVLTree<std::string, unsigned> tree;
+    
+    countWords(stream, tree);
+    cout << tree.toString() <<endl;
+}
+
 int main()
 {
-    testFind();
+    test();
     return 0;
 }
 
