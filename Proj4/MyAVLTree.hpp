@@ -144,7 +144,7 @@ Value* MyAVLTree<Key, Value>::find(Node* root, const Key & k) const
         return &(root->val);
     
     if(k < root->key)
-        find(root->leftChild, k);
+        return find(root->leftChild, k);
     
     return find(root->rightChild, k);
 }
@@ -443,7 +443,7 @@ std::string MyAVLTree<Key, Value>::toString(Node* root, size_t level){
     std::string ans = toString(root->leftChild, level + 1);
     ans += "\n";
     for (int i = 0; i < level; i++) {
-        ans += "\t";
+        ans += "            ";
     }
     ans += root->key;
     ans += toString(root->rightChild, level + 1);

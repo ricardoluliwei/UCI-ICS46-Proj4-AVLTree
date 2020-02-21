@@ -23,7 +23,7 @@ void testOrder(){
     tree.insert(3, "sna");
     tree.insert(10, "bar");
     tree.insert(12, "twelve");
-    
+    tree.insert(5, "foo");
     vector<int> inOrder = tree.inOrder();
     for (int i = 0; i < inOrder.size(); i++) {
         cout << inOrder[i] <<endl;
@@ -41,6 +41,7 @@ void test(){
     MyAVLTree<std::string, unsigned> tree;
     
     countWords(stream, tree);
+    tree.contains("to");
     cout << tree.toString() <<endl;
 }
 
