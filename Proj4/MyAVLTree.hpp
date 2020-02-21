@@ -11,6 +11,9 @@ public:
     ElementNotFoundException(const std::string & err) : RuntimeException(err) {}
 };
 
+/*
+ treeNode used in MyAVLTree, overide operator == , < , >
+ */
 template<typename Key, typename Value>
 struct treeNode{
     Key key;
@@ -19,6 +22,8 @@ struct treeNode{
     treeNode* rightChild;
     treeNode(Key k, Value v) : key(k), val(v), leftChild(NULL), rightChild(NULL){}
     bool operator ==(const treeNode<Key, Value> &node) const {return key == node.key;}
+    bool operator < (const treeNode<Key, Value> &node) const {return key < node.key;}
+    bool operator > (const treeNode<Key, Value> &node) const {return key > node.key;}
 };
 
 
@@ -32,15 +37,7 @@ private:
     
     //helper functions
     
-    bool deleteNode(Node* root){
-        if (!root)
-            return false;
-        deleteNode(root->leftChild);
-        deleteNode(root->rightChild);
-        delete root;
-        mSize--;
-        return true;
-    }
+    bool deleteNode(Node* root);
     
     void LLrotation(Node* rotateNode, Node* prev);
     void RRrotation(Node* rotateNode, Node* prev);
@@ -49,8 +46,9 @@ private:
     size_t getheight(Node* root);
     void balance(Node* root, Node* prev);
     
+    void insert(Node* copy, Node* source);
     void insert(Node* root, const Key & k, const Value &v);
-    Value* find(Node* root, const Key & k) const;
+    treeNode<Key, Value>* find(Node* root, const Key & k) const;
     
     void inOrder(Node* root, std::vector<Key> &ans) const;
     void preOrder(Node* root, std::vector<Key> &ans) const;
@@ -63,15 +61,12 @@ public:
     // In general, a copy constructor and assignment operator
     // are good things to have.
     // For this quarter, I am not requiring these.
-    //	MyAVLTree(const MyAVLTree & st);
-    //	MyAVLTree & operator=(const MyAVLTree & st);
+    MyAVLTree(const MyAVLTree & st);
+    MyAVLTree & operator=(const MyAVLTree & st);
     
     
     // The destructor is, however, required.
-    ~MyAVLTree()
-    {
-        deleteNode(mRoot);
-    }
+    ~MyAVLTree();
     
     // size() returns the number of distinct keys in the tree.
     size_t size() const noexcept;
@@ -115,6 +110,48 @@ public:
 };
 
 
+//copy constructor, deep copy
+template<typename Key, typename Value>
+MyAVLTree<Key, Value>::MyAVLTree(const MyAVLTree & st){
+    if (st.isEmpty()){
+        mSize = 0;
+        mRoot = NULL;
+        return;
+    }
+    
+    mRoot = new Node(st.mRoot->key, st.mRoot->val);
+    insert(mRoot, st.mRoot->leftChild);
+    insert(mRoot, st.mRoot->rightChild);
+    mSize = st.size();
+}
+
+//assignment operator, deep copy
+template<typename Key, typename Value>
+MyAVLTree<Key, Value> & MyAVLTree<Key, Value>:: operator = (const MyAVLTree & st){
+    deleteNode(mRoot);
+    
+    if (st.isEmpty()){
+        mSize = 0;
+        mRoot = NULL;
+        return *this;
+    }
+    
+    mRoot = new Node(st.mRoot->key, st.mRoot->val);
+    insert(mRoot, st.mRoot->leftChild);
+    insert(mRoot, st.mRoot->rightChild);
+    mSize = st.size();
+    
+    return *this;
+}
+
+//destructor, delete every node in the tree
+template<typename Key, typename Value>
+MyAVLTree<Key,Value>:: ~MyAVLTree()
+{
+    deleteNode(mRoot);
+}
+
+//constructor, default tree is an empty tree.
 template<typename Key, typename Value>
 MyAVLTree<Key,Value>::MyAVLTree()
 {
@@ -122,26 +159,41 @@ MyAVLTree<Key,Value>::MyAVLTree()
     mRoot = NULL;
 }
 
+// size() returns the number of distinct keys in the tree.
 template<typename Key, typename Value>
 size_t MyAVLTree<Key, Value>::size() const noexcept
 {
     return mSize;
 }
 
+// return true is the tree is empty
 template<typename Key, typename Value>
 bool MyAVLTree<Key, Value>::isEmpty() const noexcept
 {
     return mSize == 0;
 }
 
+//helper function to delete the tree lead by "root"
 template<typename Key, typename Value>
-Value* MyAVLTree<Key, Value>::find(Node* root, const Key & k) const
+bool MyAVLTree<Key, Value>::deleteNode(Node* root){
+    if (!root)
+        return false;
+    deleteNode(root->leftChild);
+    deleteNode(root->rightChild);
+    delete root;
+    mSize--;
+    return true;
+}
+
+//helper function to find the treeNode with the key "k", in the tree "root"
+template<typename Key, typename Value>
+treeNode<Key, Value>* MyAVLTree<Key, Value>::find(Node* root, const Key & k) const
 {
     if (!root)
         return NULL;
     
     if (root->key == k)
-        return &(root->val);
+        return root;
     
     if(k < root->key)
         return find(root->leftChild, k);
@@ -150,35 +202,37 @@ Value* MyAVLTree<Key, Value>::find(Node* root, const Key & k) const
 }
 
 
+//return true if MyAVLTree contains the key "k"
 template<typename Key, typename Value>
 bool MyAVLTree<Key, Value>::contains(const Key &k) const
 {
     return find(mRoot, k) != NULL ;
 }
 
-
-
-
+//return the value of the treeNode with a Key "k"
+//throw ElementNotFoundException if the tree does not contains "k"
 template<typename Key, typename Value>
 Value & MyAVLTree<Key, Value>::find(const Key & k)
 {
     if (!contains(k))
         throw ElementNotFoundException("Element Not Found");
     
-    return *find(mRoot, k);
+    return find(mRoot, k)->val;
 }
 
-
+//return the value of the treeNode with a Key "k"
+//throw ElementNotFoundException if the tree does not contains "k"
 template<typename Key, typename Value>
 const Value & MyAVLTree<Key, Value>::find(const Key & k) const
 {
     if (!contains(k))
         throw ElementNotFoundException("Element Not Found");
     
-    return *find(mRoot, k);
+    return find(mRoot, k)->val;
 }
 
-
+//insert a new node(k,v) into the tree
+//do nothing if the tree contians a Key "k"
 template<typename Key, typename Value>
 void MyAVLTree<Key, Value>::insert(const Key & k, const Value & v)
 {
@@ -197,6 +251,8 @@ void MyAVLTree<Key, Value>::insert(const Key & k, const Value & v)
     balance(mRoot, NULL);
 }
 
+//helper function
+//used to insert a new node(k, v) into a tree with the root
 //root must not be empty, k, v should not exist in the tree
 template<typename Key, typename Value>
 void MyAVLTree<Key, Value>::insert(Node* root, const Key & k, const Value & v)
@@ -217,7 +273,22 @@ void MyAVLTree<Key, Value>::insert(Node* root, const Key & k, const Value & v)
     return insert(root->rightChild, k, v);
 }
 
+//helper function for deep copy
+//copy every node from "source" to "copy"
+//"copy" should not be NULL
+template<typename Key, typename Value>
+void MyAVLTree<Key, Value>::insert(Node* copy, Node*source){
+    if (!source)
+        return;
+    
+    //pre-order
+    insert(copy, source->key, source->val);
+    insert(copy, source->leftChild);
+    insert(copy, source->rightChild);
+}
 
+//helper function
+//inorder tranverse the tree and push the Keys into the vector
 template<typename Key, typename Value>
 void MyAVLTree<Key, Value>::inOrder(Node* root, std::vector<Key> &ans) const
 {
@@ -229,6 +300,7 @@ void MyAVLTree<Key, Value>::inOrder(Node* root, std::vector<Key> &ans) const
     inOrder(root->rightChild, ans);
 }
 
+//inorder tranverse the tree and push the Keys into the vector
 template<typename Key, typename Value>
 std::vector<Key> MyAVLTree<Key, Value>::inOrder() const
 {
@@ -237,7 +309,8 @@ std::vector<Key> MyAVLTree<Key, Value>::inOrder() const
     return ans;
 }
 
-
+//helper function
+//preorder tranverse the tree and push the Keys into the vector
 template<typename Key, typename Value>
 void MyAVLTree<Key, Value>::preOrder(Node* root, std::vector<Key> &ans) const
 {
@@ -249,6 +322,7 @@ void MyAVLTree<Key, Value>::preOrder(Node* root, std::vector<Key> &ans) const
     preOrder(root->rightChild, ans);
 }
 
+//preorder tranverse the tree and push the Keys into the vector
 template<typename Key, typename Value>
 std::vector<Key> MyAVLTree<Key, Value>::preOrder() const
 {
@@ -257,7 +331,8 @@ std::vector<Key> MyAVLTree<Key, Value>::preOrder() const
     return ans;
 }
 
-
+//helper function
+//postorder tranverse the tree and push the Keys into the vector
 template<typename Key, typename Value>
 void MyAVLTree<Key, Value>::postOrder(Node* root, std::vector<Key> &ans) const
 {
@@ -269,6 +344,7 @@ void MyAVLTree<Key, Value>::postOrder(Node* root, std::vector<Key> &ans) const
     ans.push_back(root->val);
 }
 
+//postorder tranverse the tree and push the Keys into the vector
 template<typename Key, typename Value>
 std::vector<Key> MyAVLTree<Key, Value>::postOrder() const
 {
@@ -277,7 +353,7 @@ std::vector<Key> MyAVLTree<Key, Value>::postOrder() const
     return ans;
 }
 
-
+//caculate the height of the node "root"
 template <typename Key, typename Value>
 size_t MyAVLTree<Key, Value>::getheight(Node* root) {
     if (!root)
@@ -380,7 +456,6 @@ void MyAVLTree<Key, Value>::LRrotation(Node* rotateNode, Node* prev){
        / \
       h   h
  */
-
 template <typename Key, typename Value>
 void MyAVLTree<Key, Value>::RLrotation(Node* rotateNode, Node* prev){
     Node* c;
@@ -401,11 +476,14 @@ void MyAVLTree<Key, Value>::RLrotation(Node* rotateNode, Node* prev){
     c->leftChild = rotateNode;
 }
 
-
+//Balance the tree
+//need to be called after every insert and delete
 template <typename Key, typename Value>
 void MyAVLTree<Key, Value>::balance(Node* root, Node* prev){
     if (!root)
         return;
+    
+    //inorder
     
     if (root->leftChild)
         balance(root->leftChild, root);
@@ -435,6 +513,9 @@ void MyAVLTree<Key, Value>::balance(Node* root, Node* prev){
     }
 }
 
+//helper function
+//return a inorder tranverse tree with the key
+//Bugs exists when the Key is not a string or char
 template<typename Key, typename Value>
 std::string MyAVLTree<Key, Value>::toString(Node* root, size_t level){
     if (!root) {
@@ -450,6 +531,8 @@ std::string MyAVLTree<Key, Value>::toString(Node* root, size_t level){
     return ans;
 }
 
+//return a inorder tranverse tree with the key
+//Bugs exists when the Key is not a string or char
 template<typename Key, typename Value>
 std::string MyAVLTree<Key, Value>::toString(){
     return toString(mRoot, 0);

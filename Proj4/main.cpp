@@ -26,8 +26,50 @@ void testOrder(){
     tree.insert(5, "foo");
     vector<int> inOrder = tree.inOrder();
     for (int i = 0; i < inOrder.size(); i++) {
-        cout << inOrder[i] <<endl;
+        cout << inOrder[i] << endl;
     }
+}
+
+void testCopy(){
+    MyAVLTree<int, string> tree;
+    tree.insert(5, "foo");
+    tree.insert(3, "sna");
+    tree.insert(10, "bar");
+    tree.insert(12, "twelve");
+    tree.insert(5, "foo");
+    vector<int> inOrder = tree.inOrder();
+    cout << "Tree 1: " <<endl;
+    for (int i = 0; i < inOrder.size(); i++) {
+        cout << inOrder[i] << endl;
+    }
+    
+    MyAVLTree<int, string> tree2(tree);
+    MyAVLTree<int, string> tree3;
+    tree3.insert(-1, "should be deleted");
+    tree3 = tree;
+    
+    tree.insert(1, "here");
+    
+    cout << &tree <<endl;
+    delete &tree;
+    inOrder = tree.inOrder();
+    cout << "Tree 1 after insert: " <<endl;
+    for (int i = 0; i < inOrder.size(); i++) {
+        cout << inOrder[i] << endl;
+    }
+    
+    inOrder = tree2.inOrder();
+    cout << "Tree 2: " <<endl;
+    for (int i = 0; i < inOrder.size(); i++) {
+        cout << inOrder[i] << endl;
+    }
+    
+    inOrder = tree3.inOrder();
+    cout << "Tree 3:" <<endl;
+    for (int i = 0; i < inOrder.size(); i++) {
+        cout << inOrder[i] << endl;
+    }
+    
 }
 
 void test(){
@@ -41,13 +83,13 @@ void test(){
     MyAVLTree<std::string, unsigned> tree;
     
     countWords(stream, tree);
-    tree.contains("to");
+    cout << "excpect to be 3: " << tree.find("to") << endl;
     cout << tree.toString() <<endl;
 }
 
 int main()
 {
-    test();
+    testCopy();
     return 0;
 }
 
