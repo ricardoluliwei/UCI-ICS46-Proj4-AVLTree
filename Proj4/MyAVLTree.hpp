@@ -31,16 +31,27 @@ private:
     Node* mRoot;
     
     //helper functions
+    
+    bool deleteNode(Node* root){
+        if (!root)
+            return false;
+        deleteNode(root->leftChild);
+        deleteNode(root->rightChild);
+        delete root;
+        mSize--;
+        return true;
+    }
+    
     void LLrotation(Node* rotateNode, Node* prev);
     void RRrotation(Node* rotateNode, Node* prev);
     void LRrotation(Node* rotateNode, Node* prev);
     void RLrotation(Node* rotateNode, Node* prev);
-    
     size_t getheight(Node* root);
     void balance(Node* root, Node* prev);
     
     void insert(Node* root, const Key & k, const Value &v);
     Value* find(Node* root, const Key & k) const;
+    
     void inOrder(Node* root, std::vector<Key> &ans) const;
     void preOrder(Node* root, std::vector<Key> &ans) const;
     void postOrder(Node* root, std::vector<Key> &ans) const;
@@ -59,7 +70,7 @@ public:
     // The destructor is, however, required.
     ~MyAVLTree()
     {
-        // TODO
+        deleteNode(mRoot);
     }
     
     // size() returns the number of distinct keys in the tree.
@@ -100,7 +111,7 @@ public:
     std::vector<Key> preOrder() const;
     std::vector<Key> postOrder() const;
     
-    
+    std::string toString();
 };
 
 
@@ -422,6 +433,7 @@ void MyAVLTree<Key, Value>::balance(Node* root, Node* prev){
         return;
     }
 }
+
 
 
 #endif 
