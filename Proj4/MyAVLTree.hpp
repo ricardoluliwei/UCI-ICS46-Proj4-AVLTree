@@ -48,7 +48,7 @@ private:
     
     void insert(Node* copy, Node* source);
     void insert(Node* root, const Key & k, const Value &v);
-    treeNode<Key, Value>* find(Node* root, const Key & k) const;
+    Value* find(Node* root, const Key & k) const;
     
     void inOrder(Node* root, std::vector<Key> &ans) const;
     void preOrder(Node* root, std::vector<Key> &ans) const;
@@ -187,13 +187,13 @@ bool MyAVLTree<Key, Value>::deleteNode(Node* root){
 
 //helper function to find the treeNode with the key "k", in the tree "root"
 template<typename Key, typename Value>
-treeNode<Key, Value>* MyAVLTree<Key, Value>::find(Node* root, const Key & k) const
+Value* MyAVLTree<Key, Value>::find(Node* root, const Key & k) const
 {
     if (!root)
         return NULL;
     
     if (root->key == k)
-        return root;
+        return &root->val;
     
     if(k < root->key)
         return find(root->leftChild, k);
@@ -217,7 +217,7 @@ Value & MyAVLTree<Key, Value>::find(const Key & k)
     if (!contains(k))
         throw ElementNotFoundException("Element Not Found");
     
-    return find(mRoot, k)->val;
+    return *find(mRoot, k);
 }
 
 //return the value of the treeNode with a Key "k"
@@ -228,7 +228,7 @@ const Value & MyAVLTree<Key, Value>::find(const Key & k) const
     if (!contains(k))
         throw ElementNotFoundException("Element Not Found");
     
-    return find(mRoot, k)->val;
+    return *find(mRoot, k);
 }
 
 //insert a new node(k,v) into the tree

@@ -51,7 +51,7 @@ void testCopy(){
     tree.insert(1, "here");
     
     cout << &tree <<endl;
-    delete &tree;
+    //delete &tree;
     inOrder = tree.inOrder();
     cout << "Tree 1 after insert: " <<endl;
     for (int i = 0; i < inOrder.size(); i++) {
@@ -72,7 +72,7 @@ void testCopy(){
     
 }
 
-void test(){
+void testCountWords(){
     std::string quote = "I'm dishonest, and a dishonest man you can ";
     quote += "always trust to be dishonest. Honestly. It's the honest ";
     quote += "ones you want to watch out for, because you can never ";
@@ -89,7 +89,7 @@ void test(){
 
 int main()
 {
-    testCopy();
+    testCountWords();
     return 0;
 }
 
