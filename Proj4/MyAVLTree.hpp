@@ -54,7 +54,7 @@ private:
     void preOrder(Node* root, std::vector<Key> &ans) const;
     void postOrder(Node* root, std::vector<Key> &ans) const;
     
-     std::string toString(Node* root, size_t level);
+    std::string toString(Node* root, size_t level);
 public:
     MyAVLTree();
     
@@ -367,24 +367,21 @@ size_t MyAVLTree<Key, Value>::getheight(Node* root) {
 
 
 /*
-        A
-       / \
-      B   h
-     / \
-    h+1 h
+ A
+ / \
+ B   h
+ / \
+ h+1 h
  */
 template <typename Key, typename Value>
 void MyAVLTree<Key, Value>::LLrotation(Node* rotateNode, Node* prev){
-    Node* b;
+    Node* b = rotateNode->leftChild;
     if (!prev) {
-        b = rotateNode->leftChild;
         mRoot = b;
     } else if (prev->leftChild == rotateNode) {
-        prev->leftChild = rotateNode->leftChild;
-        b = prev->leftChild;
+        prev->leftChild = b;
     } else {
-        prev->rightChild = rotateNode->leftChild;
-        b = prev->rightChild;
+        prev->rightChild = b;
     }
     
     rotateNode->leftChild = b->rightChild;
@@ -392,52 +389,46 @@ void MyAVLTree<Key, Value>::LLrotation(Node* rotateNode, Node* prev){
 }
 
 /*
-        A
-       / \
-      h   B
-         / \
-        h  h+1
+ A
+ / \
+ h   B
+ / \
+ h  h+1
  */
 template <typename Key, typename Value>
 void MyAVLTree<Key, Value>::RRrotation(Node* rotateNode, Node* prev){
-    Node* b;
+    Node* b = rotateNode->rightChild;
     if (!prev) {
-        b = rotateNode->rightChild;
         mRoot = b;
     } else if (prev->leftChild == rotateNode) {
-        prev->leftChild = rotateNode->rightChild;
-        b = prev->leftChild;
+        prev->leftChild = b;
     } else {
-        prev->rightChild = rotateNode->rightChild;
-        b = prev->rightChild;
+        prev->rightChild = b;
     }
     
-    rotateNode->rightChild = b->rightChild;
-    b->rightChild = rotateNode;
+    rotateNode->rightChild = b->leftChild;
+    b->leftChild = rotateNode;
 }
 
 
 /*
-        A
-       / \
-      B   h
-     / \
-    h   C
-       / \
-      h   h
+ A
+ / \
+ B   h
+ / \
+ h   C
+ / \
+ h   h
  */
 template <typename Key, typename Value>
 void MyAVLTree<Key, Value>::LRrotation(Node* rotateNode, Node* prev){
-    Node* c;
+    Node* c = rotateNode->leftChild->rightChild;
     if (!prev) {
-        c = rotateNode->leftChild->rightChild;
         mRoot = c;
     } else if (prev->leftChild == rotateNode) {
-        prev->leftChild = rotateNode->leftChild->rightChild;
-        c = prev->leftChild;
+        prev->leftChild = c;
     } else {
-        prev->rightChild = rotateNode->leftChild->rightChild;
-        c = prev->rightChild;
+        prev->rightChild = c;
     }
     
     rotateNode->leftChild->rightChild = c->leftChild;
@@ -448,26 +439,23 @@ void MyAVLTree<Key, Value>::LRrotation(Node* rotateNode, Node* prev){
 }
 
 /*
-        A
-       / \
-      h   B
-         / \
-        C   h
-       / \
-      h   h
+ A
+ / \
+ h   B
+ / \
+ C   h
+ / \
+ h   h
  */
 template <typename Key, typename Value>
 void MyAVLTree<Key, Value>::RLrotation(Node* rotateNode, Node* prev){
-    Node* c;
+    Node* c = rotateNode->rightChild->leftChild;;
     if (!prev) {
-        c = rotateNode->rightChild->leftChild;
         mRoot = c;
     } else if (prev->leftChild == rotateNode) {
-        prev->leftChild = rotateNode->rightChild->leftChild;
-        c = prev->leftChild;
+        prev->leftChild = c;
     } else {
-        prev->rightChild = rotateNode->rightChild->leftChild;
-        c = prev->rightChild;
+        prev->rightChild = c;
     }
     
     rotateNode->rightChild->leftChild = c->rightChild;
