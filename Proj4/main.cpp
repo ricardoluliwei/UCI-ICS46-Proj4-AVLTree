@@ -83,7 +83,7 @@ void testCountWords(){
     MyAVLTree<std::string, unsigned> tree;
     
     countWords(stream, tree);
-    cout << "excpect to be 3: " << tree.find("to") << endl;
+    cout << "excpect to be 3: " << tree.find("dishonest") << endl;
     cout << tree.toString() <<endl;
 }
 

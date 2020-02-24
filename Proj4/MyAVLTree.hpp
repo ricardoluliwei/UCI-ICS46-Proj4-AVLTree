@@ -193,7 +193,7 @@ Value* MyAVLTree<Key, Value>::find(Node* root, const Key & k) const
         return NULL;
     
     if (root->key == k)
-        return &root->val;
+        return &(root->val);
     
     if(k < root->key)
         return find(root->leftChild, k);
