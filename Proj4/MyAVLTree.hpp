@@ -367,11 +367,11 @@ size_t MyAVLTree<Key, Value>::getheight(Node* root) {
 
 
 /*
- A
- / \
- B   h
- / \
- h+1 h
+        A
+       / \
+      B   h
+     / \
+    h+1 h
  */
 template <typename Key, typename Value>
 void MyAVLTree<Key, Value>::LLrotation(Node* rotateNode, Node* prev){
@@ -389,11 +389,11 @@ void MyAVLTree<Key, Value>::LLrotation(Node* rotateNode, Node* prev){
 }
 
 /*
- A
- / \
- h   B
- / \
- h  h+1
+        A
+       / \
+      h   B
+     / \
+    h  h+1
  */
 template <typename Key, typename Value>
 void MyAVLTree<Key, Value>::RRrotation(Node* rotateNode, Node* prev){
@@ -412,13 +412,13 @@ void MyAVLTree<Key, Value>::RRrotation(Node* rotateNode, Node* prev){
 
 
 /*
- A
- / \
- B   h
- / \
- h   C
- / \
- h   h
+        A
+       / \
+      B   h
+     / \
+    h   C
+   / \
+  h   h
  */
 template <typename Key, typename Value>
 void MyAVLTree<Key, Value>::LRrotation(Node* rotateNode, Node* prev){
@@ -439,13 +439,13 @@ void MyAVLTree<Key, Value>::LRrotation(Node* rotateNode, Node* prev){
 }
 
 /*
- A
- / \
- h   B
- / \
- C   h
- / \
- h   h
+        A
+       / \
+      h   B
+         / \
+        C   h
+       / \
+      h   h
  */
 template <typename Key, typename Value>
 void MyAVLTree<Key, Value>::RLrotation(Node* rotateNode, Node* prev){
