@@ -31,29 +31,34 @@ void testOrder(){
 }
 
 void testCopy(){
-    MyAVLTree<int, string> tree;
-    tree.insert(5, "foo");
-    tree.insert(3, "sna");
-    tree.insert(10, "bar");
-    tree.insert(12, "twelve");
-    tree.insert(5, "foo");
-    vector<int> inOrder = tree.inOrder();
+    MyAVLTree<int, string> *tree = new MyAVLTree<int, string>;
+    tree->insert(5, "foo");
+    tree->insert(3, "sna");
+    tree->insert(10, "bar");
+    tree->insert(12, "twelve");
+    tree->insert(5, "foo");
+    vector<int> inOrder = tree->inOrder();
     cout << "Tree 1: " <<endl;
     for (int i = 0; i < inOrder.size(); i++) {
         cout << inOrder[i] << endl;
     }
     
-    MyAVLTree<int, string> tree2(tree);
+    MyAVLTree<int, string> tree2(*tree);
     MyAVLTree<int, string> tree3;
     tree3.insert(-1, "should be deleted");
-    tree3 = tree;
+    tree3 = *tree;
     
-    tree.insert(1, "here");
+    tree->insert(1, "here");
     
-    cout << &tree <<endl;
-    //delete &tree;
-    inOrder = tree.inOrder();
+    inOrder = tree->inOrder();
     cout << "Tree 1 after insert: " <<endl;
+    for (int i = 0; i < inOrder.size(); i++) {
+        cout << inOrder[i] << endl;
+    }
+    
+    delete tree;
+    inOrder = tree->inOrder();
+    cout << "Tree 1 after delete: " <<endl;
     for (int i = 0; i < inOrder.size(); i++) {
         cout << inOrder[i] << endl;
     }
@@ -87,9 +92,10 @@ void testCountWords(){
     cout << tree.toString() <<endl;
 }
 
+
 int main()
 {
-    testCountWords();
+    testCopy();
     return 0;
 }
 

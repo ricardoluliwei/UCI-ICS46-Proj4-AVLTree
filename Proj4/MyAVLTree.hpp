@@ -113,16 +113,7 @@ public:
 //copy constructor, deep copy
 template<typename Key, typename Value>
 MyAVLTree<Key, Value>::MyAVLTree(const MyAVLTree & st){
-    if (st.isEmpty()){
-        mSize = 0;
-        mRoot = NULL;
-        return;
-    }
-    
-    mRoot = new Node(st.mRoot->key, st.mRoot->val);
-    insert(mRoot, st.mRoot->leftChild);
-    insert(mRoot, st.mRoot->rightChild);
-    mSize = st.size();
+    *this = st;
 }
 
 //assignment operator, deep copy
@@ -149,6 +140,8 @@ template<typename Key, typename Value>
 MyAVLTree<Key,Value>:: ~MyAVLTree()
 {
     deleteNode(mRoot);
+    mSize = 0;
+    mRoot = NULL;
 }
 
 //constructor, default tree is an empty tree.
@@ -173,7 +166,7 @@ bool MyAVLTree<Key, Value>::isEmpty() const noexcept
     return mSize == 0;
 }
 
-//helper function to delete the tree lead by "root"
+//helper function to delete the sub-tree lead by "root"
 template<typename Key, typename Value>
 bool MyAVLTree<Key, Value>::deleteNode(Node* root){
     if (!root)
@@ -181,7 +174,6 @@ bool MyAVLTree<Key, Value>::deleteNode(Node* root){
     deleteNode(root->leftChild);
     deleteNode(root->rightChild);
     delete root;
-    mSize--;
     return true;
 }
 
