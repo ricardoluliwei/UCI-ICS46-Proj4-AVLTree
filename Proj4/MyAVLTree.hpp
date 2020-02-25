@@ -240,6 +240,7 @@ void MyAVLTree<Key, Value>::insert(const Key & k, const Value & v)
     }
     
     insert(mRoot, k, v);
+    balance(mRoot, NULL);
     mSize++;
 }
 
