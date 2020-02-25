@@ -240,7 +240,6 @@ void MyAVLTree<Key, Value>::insert(const Key & k, const Value & v)
     
     insert(mRoot, k, v);
     mSize++;
-    balance(mRoot, NULL);
 }
 
 //helper function
@@ -461,19 +460,11 @@ void MyAVLTree<Key, Value>::RLrotation(Node* rotateNode, Node* prev){
 }
 
 //Balance the tree
-//need to be called after every insert and delete
+//balance the sub-tree of "root",
 template <typename Key, typename Value>
 void MyAVLTree<Key, Value>::balance(Node* root, Node* prev){
     if (!root)
         return;
-    
-    //inorder
-    
-//    if (root->leftChild)
-//        balance(root->leftChild, root);
-//
-//    if (root->rightChild)
-//        balance(root->rightChild, root);
     
     size_t leftHeight = getheight(root->leftChild);
     size_t rightHeight = getheight(root->rightChild);

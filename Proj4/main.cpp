@@ -93,10 +93,25 @@ void testCountWords(){
     cout << tree.toString() <<endl;
 }
 
+void testBig(){
+    ifstream in("words.txt");
+    MyAVLTree<std::string, unsigned> tree;
+    
+    countWords(in, tree);
+    cout << "size: " << tree.size() <<endl;
+    vector<string> inOrder = tree.inOrder();
+    
+    cout << "Tree 1: " <<endl;
+    for (int i = 0; i < inOrder.size(); i++) {
+        cout << inOrder[i] << " : " << tree.find(inOrder[i]) << endl;
+    }
+    
+}
+
 
 int main()
 {
-    testCountWords();
+    testBig();
     return 0;
 }
 
