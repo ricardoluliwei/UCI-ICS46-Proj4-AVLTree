@@ -62,8 +62,8 @@
 		8C07CF8E23FCE02C00546373 /* Proj4 */ = {
 			isa = PBXGroup;
 			children = (
-				8C07CFA523FCE60B00546373 /* main.cpp */,
 				8C07CFA723FCE60B00546373 /* MyAVLTree.hpp */,
+				8C07CFA523FCE60B00546373 /* main.cpp */,
 				8C07CFA823FCE60B00546373 /* proj4.cpp */,
 				8C07CFA923FCE60B00546373 /* proj4.hpp */,
 				8C07CFA623FCE60B00546373 /* runtimeexcept.hpp */,
