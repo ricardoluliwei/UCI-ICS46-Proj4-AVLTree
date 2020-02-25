@@ -16,6 +16,7 @@ public:
  */
 template<typename Key, typename Value>
 struct treeNode{
+    size_t height;
     Key key;
     Value val;
     treeNode* leftChild;
@@ -354,10 +355,10 @@ size_t MyAVLTree<Key, Value>::getheight(Node* root) {
     if (!root)
         return 0;
     
-    size_t left = getheight(root->leftChild);
-    size_t right = getheight(root->rightChild);
-    
-    return (left < right ? right : left) + 1;
+    size_t left = root->leftChild ? root->leftChild->height : 0;
+    size_t right = root->rightChild ? root->rightChild->height : 0;
+    root->height = (left < right ? right : left) + 1;
+    return root->height;
 }
 
 
@@ -381,14 +382,16 @@ void MyAVLTree<Key, Value>::LLrotation(Node* rotateNode, Node* prev){
     
     rotateNode->leftChild = b->rightChild;
     b->rightChild = rotateNode;
+    getheight(b->rightChild);
+    getheight(b);
 }
 
 /*
         A
        / \
       h   B
-     / \
-    h  h+1
+         / \
+        h  h+1
  */
 template <typename Key, typename Value>
 void MyAVLTree<Key, Value>::RRrotation(Node* rotateNode, Node* prev){
@@ -403,6 +406,8 @@ void MyAVLTree<Key, Value>::RRrotation(Node* rotateNode, Node* prev){
     
     rotateNode->rightChild = b->leftChild;
     b->leftChild = rotateNode;
+    getheight(b->leftChild);
+    getheight(b);
 }
 
 
@@ -412,8 +417,8 @@ void MyAVLTree<Key, Value>::RRrotation(Node* rotateNode, Node* prev){
       B   h
      / \
     h   C
-   / \
-  h   h
+       / \
+      h   h
  */
 template <typename Key, typename Value>
 void MyAVLTree<Key, Value>::LRrotation(Node* rotateNode, Node* prev){
@@ -430,7 +435,9 @@ void MyAVLTree<Key, Value>::LRrotation(Node* rotateNode, Node* prev){
     c->leftChild = rotateNode->leftChild;
     rotateNode->leftChild = c->rightChild;
     c->rightChild = rotateNode;
-    
+    getheight(c->leftChild);
+    getheight(c->rightChild);
+    getheight(c);
 }
 
 /*
@@ -457,6 +464,9 @@ void MyAVLTree<Key, Value>::RLrotation(Node* rotateNode, Node* prev){
     c->rightChild = rotateNode->rightChild;
     rotateNode->rightChild = c->leftChild;
     c->leftChild = rotateNode;
+    getheight(c->leftChild);
+    getheight(c->rightChild);
+    getheight(c);
 }
 
 //Balance the tree
