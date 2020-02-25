@@ -254,7 +254,9 @@ void MyAVLTree<Key, Value>::insert(Node* root, const Key & k, const Value & v)
             root->leftChild = new Node(k, v);
             return;
         }
-        return insert(root->leftChild, k, v);
+        insert(root->leftChild, k, v);
+        balance(root->leftChild, root);
+        return;
     }
     
     if (!root->rightChild) {
@@ -262,7 +264,9 @@ void MyAVLTree<Key, Value>::insert(Node* root, const Key & k, const Value & v)
         return;
     }
     
-    return insert(root->rightChild, k, v);
+    insert(root->rightChild, k, v);
+    balance(root->rightChild, root);
+    return;
 }
 
 //helper function for deep copy
@@ -465,11 +469,11 @@ void MyAVLTree<Key, Value>::balance(Node* root, Node* prev){
     
     //inorder
     
-    if (root->leftChild)
-        balance(root->leftChild, root);
-    
-    if (root->rightChild)
-        balance(root->rightChild, root);
+//    if (root->leftChild)
+//        balance(root->leftChild, root);
+//
+//    if (root->rightChild)
+//        balance(root->rightChild, root);
     
     size_t leftHeight = getheight(root->leftChild);
     size_t rightHeight = getheight(root->rightChild);

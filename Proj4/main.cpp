@@ -89,13 +89,14 @@ void testCountWords(){
     
     countWords(stream, tree);
     cout << "excpect to be 3: " << tree.find("dishonest") << endl;
+    cout << "size: " << tree.size() <<endl;
     cout << tree.toString() <<endl;
 }
 
 
 int main()
 {
-    testCopy();
+    testCountWords();
     return 0;
 }
 
